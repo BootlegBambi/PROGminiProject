@@ -1,0 +1,3 @@
+# Don't upload Pycharm project settings to Github
+\.idea
+
