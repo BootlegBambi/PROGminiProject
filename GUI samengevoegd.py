@@ -38,8 +38,7 @@ def toonSpeelScherm():
     eindSchermGameOver.pack_forget()
     Menu.pack_forget()
     speelScherm.pack()
-    speler = speler_invoer.get()
-
+    speler = speler_invoer.get()    #SPELERNAAM MOET OPGESLAGEN WORDEN MAAR LUKT NIET
 
 def toonEindScherm(): #!!aanpassen: huidige puntenaantal opslaan in highscorelijst
     speelScherm.pack_forget()
@@ -119,7 +118,7 @@ speelKnop.pack(padx=10, pady=10)
 menuKnop = Button(master=eindSchermGameOver, text = 'Hoofdmenu', command = Menu_scherm)
 menuKnop.pack(padx = 10, pady = 10)
 
-
+#Menu scherm
 Menu=Frame(master=root, width=500, height=300)
 Menu.pack(fill="both", expand=True)
 Menu.pack_propagate(0)
@@ -134,16 +133,22 @@ Uitleg_knop.pack(padx = 10, pady = 10)
 Highscores_knop=Button(master=Menu, text='Highscores', command=Highscores_scherm)
 Highscores_knop.pack(padx = 10, pady = 10)
 
+#Uitleg scherm
 Uitleg=Frame(master=root, width=500, height=300)
 Uitleg.pack(fill="both", expand=True)
 Uitleg.pack_propagate(0)
 Uitleg_titel=Label(master=Uitleg, text='Uitleg', height = 3)
 Uitleg_titel.pack(padx = 10, pady = 10)
-Uitleg_regels=Label(master=Uitleg, text='Je begint met 25 punten\n-3 punten bij elke nieuwe hint die je opvraagt.\n-1 punt bij elke foute superheld die je hebt geraden.\n')
+Uitleg_regels=Label(master=Uitleg, text='Het doel is om de juiste superheld te raden.'
+                                        '\nDit doe je met behulp van de hints.'
+                                        ' Je begint met 25 punten.'
+                                        '\nJe verliest 3 punten zodra je een nieuwe hint hebt opgevraagt.'
+                                        '\n Je verliest daarnaast ook 1 punt als je de verkeerde superheld hebt geraden.')
 Uitleg_regels.pack(padx = 10, pady = 10)
 Uitleg_Menu_Knop=Button(master=Uitleg, text='Menu', command=Menu_scherm)
 Uitleg_Menu_Knop.pack(padx = 10, pady = 10)
 
+#Highscores scherm
 Highscores=Frame(master=root, width=500, height=300)
 Highscores.pack(fill="both", expand=True)
 Highscores.pack_propagate(0)
