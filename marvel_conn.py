@@ -2,6 +2,7 @@ import hashlib
 import http.client
 import json
 import time
+import urllib
 
 def get_md5digest(timestamp, public_key):
     """Return the correct md5 hash to connect to the Marvel Api"""
@@ -29,14 +30,26 @@ def get_data_url(endpoint, timestamp, public_key):
     return conn_url
 
 
-def get_data(endpoint):
+def get_data(endpoint, params={}):
+    """
+    Get data from the Marvel API.
+    :param endpoint: Endpoint path for the marvel API. See: https://developer.marvel.com/docs
+    :param params: Dictionary of optional parameters, See: https://developer.marvel.com/docs
+    :return: If succesfull the data in JSON format else False.
+    Note: You need a legit private and public key and the correct timestamp.
+    """
     timestamp = str(time.time())
     public_key = "02766f539b25f5e7a7621d2c15e60cfd"
+
     # Request headers
     req_headers = {}
+    # Parameters
+    params = urllib.parse.urlencode(params)
+
+    data_url = get_data_url(endpoint, timestamp, public_key)
     try:
         conn = http.client.HTTPSConnection("gateway.marvel.com")
-        conn.request("GET", get_data_url(endpoint, timestamp, public_key), headers=req_headers)
+        conn.request("GET", data_url+"&"+params, headers=req_headers)
 
         response = conn.getresponse()
         responsetext = response.read()
