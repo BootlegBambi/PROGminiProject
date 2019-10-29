@@ -1,3 +1,4 @@
+# Import all module needed to run the function below.
 import hashlib
 import http.client
 import json
@@ -5,7 +6,12 @@ import time
 import urllib
 
 def get_md5digest(timestamp, public_key):
-    """Return the correct md5 hash to connect to the Marvel Api"""
+    """
+    :param timestamp: Timestamp of the request
+    :param public_key: The public Marvel API key
+    :return: Correct md5 hash to connect to the Marvel Api
+    NOTE: This function should not be uses as an stand-alone function.
+    """
     private_key = "fe908016704e72656499f3726fd686dbc4c37155"
 
     hash = hashlib.md5((timestamp+private_key+public_key).encode('utf-8'))
@@ -14,16 +20,36 @@ def get_md5digest(timestamp, public_key):
 
 
 def get_authentication_url(timestamp, public_key, md5digest):
+    """
+    :param timestamp: Timestamp of the request
+    :param public_key: The public Marvel API key
+    :param md5digest: The Md5digest - Use get_md5digest() to create
+    :return: The authentication part of the API request url.
+    NOTE: This function should not be uses as an stand-alone function.
+    """
     auth_url = "?ts=" + timestamp + "&apikey=" + public_key + "&hash=" + md5digest
     return auth_url
 
 
 def get_connection_url(endpoint, auth_url):
+    """
+    :param endpoint: The request endpoint for the Marvel API.
+    :param auth_url: The authentication url - Use get_authentication_url() to create.
+    :return: The url(path + auth parameters) that can be used to connect to the Marvel API.
+    NOTE: This function should not be uses as an stand-alone function.
+    """
     conn_url = endpoint+auth_url
     return conn_url
 
 
 def get_data_url(endpoint, timestamp, public_key):
+    """
+    This function calls other functions to create the complete url to make a call to the Marvel API.
+    :param endpoint: The request endpoint for the Marvel API.
+    :param timestamp: Timestamp of the request
+    :param public_key: The public Marvel API key
+    :return: The complete url to be used when connection to the Marvel API.
+    """
     md5digest = get_md5digest(timestamp, public_key)
     auth_url = get_authentication_url(timestamp, public_key, md5digest)
     conn_url = get_connection_url(endpoint, auth_url)
