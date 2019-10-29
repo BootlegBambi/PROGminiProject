@@ -1,4 +1,7 @@
 import hashlib
+import http.client
+import json
+import time
 
 def get_md5digest(timestamp, public_key):
     """Return the correct md5 hash to connect to the Marvel Api"""
@@ -25,6 +28,25 @@ def get_data_url(endpoint, timestamp, public_key):
     conn_url = get_connection_url(endpoint, auth_url)
     return conn_url
 
+
+def get_data(endpoint):
+    timestamp = str(time.time())
+    public_key = "02766f539b25f5e7a7621d2c15e60cfd"
+    # Request headers
+    req_headers = {}
+    try:
+        conn = http.client.HTTPSConnection("gateway.marvel.com")
+        conn.request("GET", get_data_url(endpoint, timestamp, public_key), headers=req_headers)
+
+        response = conn.getresponse()
+        responsetext = response.read()
+        data = json.loads(responsetext)
+
+        conn.close()
+        return data
+    except Exception as e:
+        print("Fout: {} {}".format(e.errno, e.strerror))
+        return False
 
 
 
