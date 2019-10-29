@@ -1,6 +1,4 @@
 import hashlib
-import time
-
 
 def get_md5digest(timestamp, public_key):
     """Return the correct md5 hash to connect to the Marvel Api"""
@@ -17,8 +15,7 @@ def get_authentication_url(timestamp, public_key, md5digest):
 
 
 def get_connection_url(endpoint, auth_url):
-    web_url = "https://gateway.marvel.com:80"
-    conn_url = web_url+endpoint+auth_url
+    conn_url = endpoint+auth_url
     return conn_url
 
 
@@ -29,12 +26,5 @@ def get_data_url(endpoint, timestamp, public_key):
     return conn_url
 
 
-# use:
-timestamp = str(time.time())
-public_key = "02766f539b25f5e7a7621d2c15e60cfd"
-endpoint = "/v1/public/characters"
 
-# output to show it works
-# Later this evening or tommorow morning I will add the part that connects to Marvel.
-print(get_data_url(endpoint, timestamp, public_key))
 
