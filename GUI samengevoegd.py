@@ -16,7 +16,7 @@ def puntenUpdate():
     puntenTeller["text"] = puntenTekst.format(puntenAantal) #punten updaten in speelscherm
 
 def raadPoging():
-    pogingInvoer = raadVeld.get()
+    pogingInvoer = DoelTekst.get()#TIJDELIJK TOTDAT DE MEERKEUZE IS INGEVOEGD
     if pogingInvoer == 'test': #!!aanpassen: punten naar highscore schrijven, score resetten
         toonEindScherm()
     else:
@@ -32,8 +32,6 @@ def toonSpeelScherm():
     global puntenAantal
     puntenAantal = 25
     puntenUpdate()
-    global raadVeld
-    raadVeld.delete(0, END) #tekstvak leegmaken van vorige entry
     eindSchermWin.pack_forget()
     eindSchermGameOver.pack_forget()
     Menu.pack_forget()
@@ -84,10 +82,14 @@ puntenAantal = 25
 speelScherm = Frame(master=root, width = 500, height = 300)
 speelScherm.pack(fill = "both", expand = True)
 speelScherm.pack_propagate(0)
-beginHint = Label(master=speelScherm, text = 'Dit is de beginhint voor elke nieuwe speler', height = 3)
+beginHint = Label(master=speelScherm, text = 'Dit is de beginhint voor elke nieuwe speler', height = 1,background='yellow')
 beginHint.pack(padx = 10, pady = 10)
-raadVeld = Entry(master=speelScherm)
-raadVeld.pack(padx = 10, pady = 10)
+#DoelTekst = Label(master=speelScherm,text='Raad de goede superheld.',height=1)
+DoelTekst = Entry(master=speelScherm)#TIJDELIJK TOTDAT DE MEERKEUZE IS INGEVOEGD
+DoelTekst.pack(padx = 10, pady = 10)
+
+
+
 raadKnop = Button(master=speelScherm, text = 'Bevestigen', command = raadPoging)
 raadKnop.pack(padx = 10, pady = 10)
 hintKnop = Button(master=speelScherm, text = 'Hint opvragen', command = nieuweHint)
