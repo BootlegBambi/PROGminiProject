@@ -41,23 +41,33 @@ def get_character_name(char_dict):
     :return: name corresponding to said character.
     '''
     name = char_dict[0]['name']
+    if '(' and ')' in name:
+        start = '('
+        end = ')'
+        real_name = (name.split(start))[1].split(end)[0]
+        name = name.replace('(' + real_name + ')', '')
     return name
 
 
-def get_character_description(char_dict):
+def get_character_description(char_dict, char_name=None):
     ''''
     :param char_dict: dictionary only containing character-related info from character.
+    :param char_name: name of character. Only needed for chosen character, so defaults to None in case it is called for other characters.
     :return: description of said character.
     :return: False if description is empty
     '''
     description = char_dict[0]['description']
     if description == '':
         return False
+    elif char_name == None:
+        pass
+    elif char_name in description:
+        return description.replace(char_name, 'XXX ')
     else:
         return description
 
 
-def dictionary_random_heroes(): #voor de random 9 keuze opties?
+def dictionary_random_characters(): #voor de random 9 keuze opties?
     ''''
     :return: Dictionary of 9 random characters (keys 1-9) with their respective name, image, and description(if available)
     Visual:
