@@ -1,5 +1,5 @@
 import marvel_conn
-
+import random
 
 def get_numberofcharacters(data=marvel_conn.get_data("/v1/public/characters", {'limit': '1'})):
     """
@@ -16,3 +16,11 @@ def get_numberofcharacters(data=marvel_conn.get_data("/v1/public/characters", {'
             return False
     return False
 
+
+def choose_character():
+    '''':return: the dictionary (only containing character-related info) from 1 random character'''
+    total = get_numberofcharacters()
+    offset = random.randint(0, (total -1))
+    data = marvel_conn.get_data("/v1/public/characters", {'offset': offset, 'limit': '1'})
+    chosen_char = data['data']['results']
+    return chosen_char
