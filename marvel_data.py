@@ -24,3 +24,60 @@ def choose_character():
     data = marvel_conn.get_data("/v1/public/characters", {'offset': offset, 'limit': '1'})
     chosen_char = data['data']['results']
     return chosen_char
+
+
+def get_image_url(char_dict):
+    ''''
+    :param char_dict: dictionary only containing character-related info from character.
+    :return: URL to image/thumbnail portraying said character.
+    '''
+    url = char_dict[0]['thumbnail']['path']
+    return url
+
+
+def get_character_name(char_dict):
+    ''''
+    :param char_dict: dictionary only containing character-related info from character.
+    :return: name corresponding to said character.
+    '''
+    name = char_dict[0]['name']
+    return name
+
+
+def get_character_description(char_dict):
+    ''''
+    :param char_dict: dictionary only containing character-related info from character.
+    :return: description of said character.
+    :return: False if description is empty
+    '''
+    description = char_dict[0]['description']
+    if description == '':
+        return False
+    else:
+        return description
+
+
+def dictionary_random_heroes(): #voor de random 9 keuze opties?
+    ''''
+    :return: Dictionary of 9 random characters (keys 1-9) with their respective name, image, and description(if available)
+    Visual:
+    {
+    1: {
+        name: '',
+        image: '',
+        description: ''
+        }
+    2: {
+        ....
+        }
+    }
+    '''
+    dict = {}
+    for x in range(1,9):
+        char = choose_character()
+        if get_character_description(char) == False:
+            dict.update({x: {'name': get_character_name(char), 'image': get_image_url(char)}})
+        else:
+            dict.update({x: {'name': get_character_name(char), 'image': get_image_url(char), 'description': get_character_description(char)}})
+    return dict
+
