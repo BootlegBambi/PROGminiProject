@@ -1,20 +1,22 @@
 import marvel_data as mvd
 
-#  variables all involving the chosen character AKA the correct answer this round
-chosen_dict = mvd.choose_character()
+#  Select one correct character
+character_correct = mvd.choose_character()
+character_correct = character_correct[0]  # Reformat format of the correct_character
 
-chosen_name = mvd.get_character_name(chosen_dict)
-chosen_image = mvd.get_image_url(chosen_dict)
-chosen_description = mvd.get_character_description(chosen_dict)
-
-#  contains all the randomly chosen characters; see marvel_data for structure dictionary
-random_char_dict = mvd.dictionary_random_characters()
+# Select random wrong character, and merge correct and wrong characters
+characters_wrong = mvd.dictionary_random_characters()
+characters_all = mvd.create_character_list(characters_wrong, character_correct)
+# Shuffel character data list
+mvd.shuffellist(characters_all)
 
 #  hints players can ask for
 #hint_comic = f'Dit character komt voor in de comic {mvd.get_comic(chosen_dict)}'
 
-#
-hint_samestoryas = mvd.char_in_same_story_as(chosen_dict)
-hint_formatted_samestoryas = mvd.format_samestoryas(hint_samestoryas)
+# 'In same serie as X' hint
+#print(mvd.char_in_same_story_as(chosen_dict))
 
-print(hint_formatted_samestoryas)
+
+
+
+
