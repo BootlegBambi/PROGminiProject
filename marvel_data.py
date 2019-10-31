@@ -26,6 +26,15 @@ def choose_character():
     return chosen_char
 
 
+def get_character_ID(char_dict):
+    '''
+    :param char_dict: dictionary only containing character-related info from character.
+    :returns: ID of character
+    '''
+    char_ID = char_dict[0]['id']
+    return char_ID
+
+
 def get_image_url(char_dict):
     '''
     :param char_dict: dictionary only containing character-related info from character.
