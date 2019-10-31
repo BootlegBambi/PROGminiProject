@@ -11,4 +11,10 @@ chosen_description = mvd.get_character_description(chosen_dict)
 random_char_dict = mvd.dictionary_random_characters()
 
 #  hints players can ask for
-hint_comic = f'Dit character komt voor in de comic {mvd.get_comic(chosen_dict)}'
+#hint_comic = f'Dit character komt voor in de comic {mvd.get_comic(chosen_dict)}'
+
+#
+hint_samestoryas = mvd.char_in_same_story_as(chosen_dict)
+hint_formatted_samestoryas = mvd.format_samestoryas(hint_samestoryas)
+
+print(hint_formatted_samestoryas)

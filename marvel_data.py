@@ -88,7 +88,7 @@ def get_comic(char_dict):
     
 
 def dictionary_random_characters(): #voor de random 9 keuze opties?
-    ''''
+    '''
     :return: Dictionary of 9 random characters (keys 1-9) with their respective name, image, and description(if available)
     Visual:
     {
@@ -103,7 +103,7 @@ def dictionary_random_characters(): #voor de random 9 keuze opties?
     }
     '''
     dict = {}
-    for x in range(1,9):
+    for x in range(1, 9):
         char = choose_character()
         if get_character_description(char) == False:
             dict.update({x: {'name': get_character_name(char), 'image': get_image_url(char)}})
@@ -111,3 +111,26 @@ def dictionary_random_characters(): #voor de random 9 keuze opties?
             dict.update({x: {'name': get_character_name(char), 'image': get_image_url(char), 'description': get_character_description(char)}})
     return dict
 
+
+def char_in_same_story_as(character):
+    story_url = character[0]['stories']['collectionURI']
+    story_url.replace('http://gateway.marvel.com', '')
+
+    stories = marvel_conn.get_data(story_url)
+    if len(stories['data']['results']) > 0:
+        if stories['data']['results'][0]['characters']['available'] > 0:
+            max = stories['data']['results'][0]['characters']['available']-1
+            number = random.randint(0, max)
+            random_char = stories['data']['results'][0]['characters']['items'][number]['name']
+            return random_char
+        else:
+            return False
+    else:
+        return False
+
+
+def format_samestoryas(random_char):
+    if random_char:
+        return "This character appears in the same serie(s) as {}".format(random_char)
+    else:
+        return "No other main characters or groups appear in the same serie(s) as this character."
