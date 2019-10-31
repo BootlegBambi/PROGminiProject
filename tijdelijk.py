@@ -1,0 +1,13 @@
+comicKnop = Button(master=speelScherm, text='Comic hint', command=nieuweHint)
+comicKnop.place(x = 70, y = 50)
+serieKnop = Button(master=speelScherm, text='Serie hint', command=nieuweHint)
+serieKnop.place(x = 190, y = 50)
+characterinverhaallijnKnop = Button(master=speelScherm, text='In verhaallijn met wie hint', command=nieuweHint)
+characterinverhaallijnKnop.place(x = 285, y = 50)
+superheldInComicMetKnop = Button(master=speelScherm, text='In comic met wie hint', command=nieuweHint)
+superheldInComicMetKnop.place(x = 305, y = 90)
+DescriptionKnop = Button(master=speelScherm, text='Description superheld', command=nieuweHint)
+DescriptionKnop.place(x = 70, y = 90)
+
+raadLabel = Label(master=speelScherm, text='Raad hieronder de superheld',background='orange')
+raadLabel.place(x=172, y=130)
