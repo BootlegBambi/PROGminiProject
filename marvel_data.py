@@ -85,6 +85,20 @@ def get_comic(char_dict):
     number = random.randint(0, (total-1))
     random_comic = char_dict[0]['comics']['items'][number]['name']
     return random_comic    
+
+
+def get_serie(char_dict):
+    '''
+    :param char_dict: dictionary only containing character-related info from character.
+    :return: a series the character is in.
+    :return: False if there are no series.
+    '''
+    total = char_dict[0]['series']['available']
+    if total == 0:
+        return False
+    number = random.randint(0, (total - 1))
+    random_series = char_dict[0]['series']['items'][number]['name']
+    return random_series
     
 
 def dictionary_random_characters(): #voor de random 9 keuze opties?
