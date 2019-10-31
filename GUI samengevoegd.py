@@ -2,6 +2,8 @@ import main
 
 from tkinter import *
 from tkinter.messagebox import showinfo #popup
+import GUI_Knoppen_Functies as GUI_fnc
+from random import shuffle
 
 def nieuweHint():
     hint = 'Nieuwe hint vanuit API opgehaald'
@@ -18,7 +20,7 @@ def puntenUpdate():
     puntenTeller["text"] = puntenTekst.format(puntenAantal) #punten updaten in speelscherm
 
 def raadPoging():
-    pogingInvoer = DoelTekst.get()#TIJDELIJK TOTDAT DE MEERKEUZE IS INGEVOEGD
+    pogingInvoer = 'lol'#TIJDELIJK TOTDAT DE MEERKEUZE IS INGEVOEGD
     if pogingInvoer == 'test': #!!aanpassen: punten naar highscore schrijven, score resetten
         toonEindScherm()
     else:
@@ -31,14 +33,21 @@ def raadPoging():
             puntenUpdate()
 
 def toonSpeelScherm():
+    superheldenLijst.append(goeieSuperheld) #global goeie antwoord toevoegen ivm anders meerdere functiecalls
+    for i in range(0, 5):
+        superheldenLijst.append(GUI_fnc.buttonSuperheld())
+    shuffle(superheldenLijst)
     global puntenAantal
     puntenAantal = 25
     puntenUpdate()
+    global speler_invoer
+    speler_invoer.delete(0, END) #spelerentry legen
     eindSchermWin.pack_forget()
     eindSchermGameOver.pack_forget()
     Menu.pack_forget()
     speelScherm.pack()
-    speler = speler_invoer.get()
+    beginHint["text"] = 'Teruggezet op nieuwe beginhint'
+    speler = speler_invoer.get() #!!naar bestand voor highscores schrijven
 
 
 def toonEindScherm(): #!!aanpassen: huidige puntenaantal opslaan in highscorelijst
@@ -67,7 +76,6 @@ def Menu_scherm():
     Menu.pack()
 
 
-
 root = Tk()
 
 schermBreedte = root.winfo_reqwidth() #schermdimensies opvragen
@@ -79,27 +87,45 @@ benedenUitlijn = int(root.winfo_screenheight() / 2 - schermHoogte / 2)
 root.geometry("+{}+{}".format(rechtsUitlijn, benedenUitlijn)) #midden van scherm neerzetten
 
 puntenAantal = 25
+superheldenLijst = []
+goeieSuperheld = GUI_fnc.buttonAntwoord()
 
 #scherm tijdens het spelen
 speelScherm = Frame(master=root, width = 500, height = 300)
 speelScherm.pack(fill = "both", expand = True)
 speelScherm.pack_propagate(0)
-beginHint = Label(master=speelScherm, text = 'Dit is de beginhint voor elke nieuwe speler', height = 1,background='yellow')
+beginHint = Label(master=speelScherm, text = 'deze tekst maakt waarschijnlijk niet meer uit', height = 1,background='yellow')
 beginHint.pack(padx = 10, pady = 10)
-#DoelTekst = Label(master=speelScherm,text='Raad de goede superheld.',height=1)
-DoelTekst = Entry(master=speelScherm)#TIJDELIJK TOTDAT DE MEERKEUZE IS INGEVOEGD
-DoelTekst.pack(padx = 10, pady = 10)
 
+#meerdere buttons aanmaken voor verschillende hints
+#true/false variabele voor knop al gedrukt of niet
+#hint ophalen vanuit API, één hint per keer simpel printen, overschrijven want true/false variabele
+hintKnop = Button(master=speelScherm, text='Nieuwe hint opvragen', command=nieuweHint)
+hintKnop.pack(padx=10, pady=5)
+raadLabel = Label(master=speelScherm, text='Raad hieronder de superheld')
+raadLabel.pack(padx=10, pady=5)
 
+#lijst maken en shuffelen van namen
+#for loop doorlopen x[tekst] = superheldnaam
+#bij command functie voor if superheldnaam = tekst dan goed anders -1
 
-raadKnop = Button(master=speelScherm, text = 'Bevestigen', command = raadPoging)
-raadKnop.pack(padx = 10, pady = 10)
-hintKnop = Button(master=speelScherm, text = 'Hint opvragen', command = nieuweHint)
-hintKnop.pack(padx = 10, pady = 10)
-stopKnop = Button(master=speelScherm, text = 'Hoofdmenu', command = Menu_scherm)
-stopKnop.pack(padx = 10, pady = 10)
-puntenTeller = Label(master=speelScherm, text = 'Huidige punten: 25', height = 3)
-puntenTeller.pack(padx = 10, pady = 10)
+superHeldButton1 = Button(master=speelScherm, text = 'superheld 1')
+superHeldButton1.place(x = 70, y = 120)
+superHeldButton2 = Button(master=speelScherm, text = 'superheld 2')
+superHeldButton2.place(x = 214, y = 120) #length = 72px
+superHeldButton3 = Button(master=speelScherm, text = 'superheld 3')
+superHeldButton3.place(x = 358, y = 120)
+superHeldButton4 = Button(master=speelScherm, text = 'superheld 4')
+superHeldButton4.place(x = 70, y = 160)
+superHeldButton5 = Button(master=speelScherm, text = 'superheld 5')
+superHeldButton5.place(x = 214, y = 160)
+superHeldButton6 = Button(master=speelScherm, text = 'superheld 6')
+superHeldButton6.place(x = 358, y = 160)
+
+menuKnop = Button(master=speelScherm, text = 'Hoofdmenu', command = Menu_scherm)
+menuKnop.place(x = 120, y = 210)
+puntenTeller = Label(master=speelScherm, text = 'Huidige punten: 25', height = 1)
+puntenTeller.place(x = 280, y = 210)
 
 #scherm als goed geraden
 eindSchermWin = Frame(master=root, width = 500, height = 300)
@@ -123,7 +149,7 @@ speelKnop.pack(padx=10, pady=10)
 menuKnop = Button(master=eindSchermGameOver, text = 'Hoofdmenu', command = Menu_scherm)
 menuKnop.pack(padx = 10, pady = 10)
 
-
+#menuscherm
 Menu=Frame(master=root, width=500, height=300)
 Menu.pack(fill="both", expand=True)
 Menu.pack_propagate(0)
@@ -138,6 +164,7 @@ Uitleg_knop.pack(padx = 10, pady = 10)
 Highscores_knop=Button(master=Menu, text='Highscores', command=Highscores_scherm)
 Highscores_knop.pack(padx = 10, pady = 10)
 
+#uitlegscherm
 Uitleg=Frame(master=root, width=500, height=300)
 Uitleg.pack(fill="both", expand=True)
 Uitleg.pack_propagate(0)
@@ -148,6 +175,7 @@ Uitleg_regels.pack(padx = 10, pady = 10)
 Uitleg_Menu_Knop=Button(master=Uitleg, text='Menu', command=Menu_scherm)
 Uitleg_Menu_Knop.pack(padx = 10, pady = 10)
 
+#highscorescherm
 Highscores=Frame(master=root, width=500, height=300)
 Highscores.pack(fill="both", expand=True)
 Highscores.pack_propagate(0)

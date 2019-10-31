@@ -111,7 +111,8 @@ def get_comic_name(char_dict):
     """
     data = marvel_conn.get_data(f"/v1/public/comics/{get_comic_ID(char_dict)}")
     comic_name = data['data']['results'][0]['title']
-    return comic_name
+    hint = f'This character appears in the comic {comic_name}'
+    return hint
 
 
 def get_serie(char_dict):
@@ -125,7 +126,8 @@ def get_serie(char_dict):
         return False
     number = random.randint(0, (total - 1))
     random_series = char_dict[0]['series']['items'][number]['name']
-    return random_series
+    hint = f'This character appears in series {random_series}'
+    return hint
 
 
 def get_other_char_in_comic(char_dict):
@@ -143,7 +145,8 @@ def get_other_char_in_comic(char_dict):
         return False
     number = random.randint(0, (total - 1))
     random_other_char = data['data']['results'][number]['name']
-    return random_other_char
+    hint = f'This character appears in a comic together with {random_other_char}'
+    return hint
 
     
 def dictionary_random_characters(): #voor de random 9 keuze opties?
