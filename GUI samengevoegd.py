@@ -1,3 +1,5 @@
+import main
+
 from tkinter import *
 from tkinter.messagebox import showinfo #popup
 import GUI_Knoppen_Functies as GUI_fnc
