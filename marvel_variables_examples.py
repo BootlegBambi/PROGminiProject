@@ -10,11 +10,14 @@ characters_all = mvd.create_character_list(characters_wrong, character_correct)
 # Shuffel character data list
 mvd.shuffellist(characters_all)
 
-#  hints players can ask for
-#hint_comic = f'Dit character komt voor in de comic {mvd.get_comic(chosen_dict)}'
+#  hints players can ask for (returns False if not available)
+hint_serie = mvd.get_serie(character_correct)
+hint_comic = mvd.get_comic_name(character_correct)
+hint_description = mvd.get_character_description(character_correct, mvd.get_character_name(character_correct))
 
 # 'In same serie as X' hint
 #print(mvd.char_in_same_story_as(chosen_dict))
+hint_other_char_in_comic = mvd.get_other_char_in_comic(chosen_dict)
 
 
 
