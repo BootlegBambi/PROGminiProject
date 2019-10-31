@@ -18,7 +18,7 @@ def get_numberofcharacters(data=marvel_conn.get_data("/v1/public/characters", {'
 
 
 def choose_character():
-    '''':return: the dictionary (only containing character-related info) from 1 random character'''
+    ''':return: the dictionary (only containing character-related info) from 1 random character'''
     total = get_numberofcharacters()
     offset = random.randint(0, (total -1))
     data = marvel_conn.get_data("/v1/public/characters", {'offset': offset, 'limit': '1'})
@@ -27,16 +27,22 @@ def choose_character():
 
 
 def get_image_url(char_dict):
-    ''''
+    '''
     :param char_dict: dictionary only containing character-related info from character.
     :return: URL to image/thumbnail portraying said character.
     '''
     url = char_dict[0]['thumbnail']['path']
+
+    if 'image_not_available' in url:
+        url = 'marvel_logo.jpg'
+    else:
+        url = url + '/portrait_fantastic.' + char_dict[0]['thumbnail']['extension']
+
     return url
 
 
 def get_character_name(char_dict):
-    ''''
+    '''
     :param char_dict: dictionary only containing character-related info from character.
     :return: name corresponding to said character.
     '''
