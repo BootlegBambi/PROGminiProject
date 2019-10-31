@@ -109,10 +109,13 @@ def get_comic_name(char_dict):
     :return: name of a comic (same comic from get_comic_ID()) the character is in.
     :return: False if there are no comic books.
     """
-    data = marvel_conn.get_data(f"/v1/public/comics/{get_comic_ID(char_dict)}")
+    comic_ID = get_comic_ID(char_dict)
+    if comic_ID == False:
+        return False
+    data = marvel_conn.get_data(f"/v1/public/comics/{comic_ID}")
     comic_name = data['data']['results'][0]['title']
     hint = f'This character appears in the comic {comic_name}'
-    return hint
+    return hint 
 
 
 def get_serie(char_dict):
