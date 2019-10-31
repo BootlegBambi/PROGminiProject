@@ -26,6 +26,15 @@ def choose_character():
     return chosen_char
 
 
+def get_character_ID(char_dict):
+    '''
+    :param char_dict: dictionary only containing character-related info from character.
+    :returns: ID of character
+    '''
+    char_ID = char_dict[0]['id']
+    return char_ID
+
+
 def get_image_url(char_dict):
     '''
     :param char_dict: dictionary only containing character-related info from character.
@@ -73,20 +82,64 @@ def get_character_description(char_dict, char_name=None):
         return description
 
     
-def get_comic(char_dict):
+def get_comic_ID(char_dict):
     '''
     :param char_dict: dictionary only containing character-related info from character.
-    :return: comic the character is in.
+    :return: ID of the comic the character is in.
     :return: False if there are no comic books.
     '''
-    total = char_dict[0]['comics']['available']
+    data = marvel_conn.get_data(f"/v1/public/characters/{get_character_ID(char_dict)}/comics")
+    total = data['data']['count']
     if total == 0:
         return False
-    number = random.randint(0, (total-1))
-    random_comic = char_dict[0]['comics']['items'][number]['name']
-    return random_comic    
-    
+    number = random.randint(0, (total - 1))
+    random_comic = data['data']['results'][number]['id']
+    return random_comic 
 
+
+def get_comic_name(char_dict):
+    '''
+    :param char_dict: dictionary only containing character-related info from character.
+    :return: name of a comic (same comic from get_comic_ID()) the character is in.
+    :return: False if there are no comic books.
+    '''
+    data = marvel_conn.get_data(f"/v1/public/comics/{get_comic_ID(char_dict)}")
+    comic_name = data['data']['results'][0]['title']
+    return comic_name
+
+
+def get_serie(char_dict):
+    '''
+    :param char_dict: dictionary only containing character-related info from character.
+    :return: a series the character is in.
+    :return: False if there are no series.
+    '''
+    total = char_dict[0]['series']['available']
+    if total == 0:
+        return False
+    number = random.randint(0, (total - 1))
+    random_series = char_dict[0]['series']['items'][number]['name']
+    return random_series
+
+
+def get_other_char_in_comic(char_dict):
+    '''
+    :param char_dict: dictionary only containing character-related info from character.
+    :return: a different random character of a comic book the character is in.
+    :return: False if there are no comics.
+    '''
+    comic_ID = get_comic_ID(char_dict)
+    if comic_ID == False:
+        return False
+    data = marvel_conn.get_data(f'/v1/public/comics/{comic_ID}/characters')
+    total = data['data']['count']
+    if total == 0:
+        return False
+    number = random.randint(0, (total - 1))
+    random_other_char = data['data']['results'][number]['name']
+    return random_other_char
+
+    
 def dictionary_random_characters(): #voor de random 9 keuze opties?
     '''
     :return: Dictionary of 9 random characters (keys 1-9) with their respective name, image, and description(if available)
