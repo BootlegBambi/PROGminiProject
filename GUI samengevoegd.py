@@ -1,4 +1,4 @@
-import main
+import leaderboard
 
 from tkinter import *
 from tkinter.messagebox import showinfo #popup

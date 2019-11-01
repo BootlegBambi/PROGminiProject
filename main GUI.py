@@ -18,29 +18,23 @@ def puntenUpdate():
     puntenTeller["text"] = puntenTekst.format(puntenAantal) #punten updaten in speelscherm
 
 def raadPoging():
-    pogingInvoer = 'lol'  # TIJDELIJK TOTDAT DE MEERKEUZE IS INGEVOEGD
-    if pogingInvoer == 'test':  # !!aanpassen: punten naar highscore schrijven, score resetten
+    pogingInvoer = 'lol'#TIJDELIJK TOTDAT DE MEERKEUZE IS INGEVOEGD
+    if pogingInvoer == 'test': #!!aanpassen: punten naar highscore schrijven, score resetten
         toonEindScherm()
     else:
-        showinfo(title='popup', message='Verkeerd geraden')  # popup voor verkeerd geraden + puntenaftrek
+        showinfo(title='popup', message='Verkeerd geraden') #popup voor verkeerd geraden + puntenaftrek
         global puntenAantal
-        puntenAantal -= 1
+        puntenAantal-= 1
         if puntenAantal <= 0:
             toonEindScherm()
         else:
             puntenUpdate()
 
-
 def toonSpeelScherm():
-    superheldenLijst.clear()
     superheldenLijst.append(goeieSuperheld) #global goeie antwoord toevoegen ivm anders meerdere functiecalls
     for i in range(0, 5):
         superheldenLijst.append(GUI_fnc.buttonSuperheld())
     shuffle(superheldenLijst)
-
-    for i in range(0, 6):
-        (buttonLijst[i])["text"] = superheldenLijst[i][0]
-
     global puntenAantal
     puntenAantal = 25
     puntenUpdate()
@@ -98,9 +92,12 @@ goeieSuperheld = GUI_fnc.buttonAntwoord()
 speelScherm = Frame(master=root, width = 500, height = 300)
 speelScherm.pack(fill = "both", expand = True)
 speelScherm.pack_propagate(0)
-beginHint = Label(master=speelScherm, text = 'deze tekst maakt waarschijnlijk niet meer uit', height = 1,background='yellow') #!!eerste hint, overschreven door terugzetten text hint?
+beginHint = Label(master=speelScherm, text = 'deze tekst maakt waarschijnlijk niet meer uit', height = 1,background='yellow')
 beginHint.pack(padx = 10, pady = 10)
 
+#meerdere buttons aanmaken voor verschillende hints
+#true/false variabele voor knop al gedrukt of niet
+#hint ophalen vanuit API, één hint per keer simpel printen, overschrijven want true/false variabele
 comicKnop = Button(master=speelScherm, text='Comic hint', command=nieuweHint)
 comicKnop.place(x = 70, y = 50)
 serieKnop = Button(master=speelScherm, text='Serie hint', command=nieuweHint)
@@ -115,6 +112,10 @@ DescriptionKnop.place(x = 70, y = 90)
 raadLabel = Label(master=speelScherm, text='Raad hieronder de superheld',background='orange')
 raadLabel.place(x=172, y=130)
 
+#lijst maken en shuffelen van namen
+#for loop doorlopen x[tekst] = superheldnaam
+#bij command functie voor if superheldnaam = tekst dan goed anders -1
+
 superHeldButton1 = Button(master=speelScherm, text = 'superheld 1')
 superHeldButton1.place(x = 70, y = 160)
 superHeldButton2 = Button(master=speelScherm, text = 'superheld 2')
@@ -127,9 +128,6 @@ superHeldButton5 = Button(master=speelScherm, text = 'superheld 5')
 superHeldButton5.place(x = 214, y = 200)
 superHeldButton6 = Button(master=speelScherm, text = 'superheld 6')
 superHeldButton6.place(x = 358, y = 200)
-
-buttonLijst = []
-buttonLijst.extend((superHeldButton1, superHeldButton2, superHeldButton3, superHeldButton4, superHeldButton5, superHeldButton6))
 
 menuKnop = Button(master=speelScherm, text = 'Hoofdmenu', command = Menu_scherm)
 menuKnop.place(x = 120, y = 250)
