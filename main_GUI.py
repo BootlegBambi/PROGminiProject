@@ -319,7 +319,7 @@ viewrules.pack_propagate(0)
 viewrules_title = Label(master=viewrules, text='Uitleg', height=3, font=("Comic Sans MS", 18), background='red', fg='white')
 viewrules_title.pack(padx=10, pady=10)
 viewrules_rules = Label(master=viewrules, font=("Comic Sans MS", 11),
-                      text='Je begint met 25 punten\n\n-3 punten bij elke nieuwe hint die je opvraagt.\n\n-1 punt bij elke foute superheld die je hebt geraden.\n')
+                      text='Je doel is om de goede superheld te raden.\n\n Dat doe je doormiddel van bijvoorbeeld hints vragen of gokken.\n\nJe begint met 25 punten.\n\n-3 punten bij elke nieuwe hint die je opvraagt.\n\n-5 punten bij elke foute superheld die je hebt geraden.\n')
 viewrules_rules.pack(padx=10, pady=10)
 viewrules_menuButton = Button(master=viewrules, text='Menu', command=view_menu)
 viewrules_menuButton.pack(padx=10, pady=10)
