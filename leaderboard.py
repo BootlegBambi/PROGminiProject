@@ -1,60 +1,52 @@
 import json
 import datetime
 
-def Highscores_Opslaan(puntenaantal,speler):
-    vandaag = datetime.datetime.today()
-    datum = vandaag.strftime("%d %b %Y")
+vandaag = datetime.datetime.today().strftime("%d %b %Y")
 
-    with open('leaderboard.json','r') as json_file:
-        data = json.load(json_file)
+with open('leader.json', 'r+') as file:
+    topscores = json.load(file)
 
-    for dicts in data:
-        if len(data[dicts]) == 0:
-            data[dicts].append([puntenaantal, speler, datum])
-        else:
-            for x in range(0, len(data[dicts])):
-                if data[dicts][x][1] == speler:
-                    if data[dicts][x][0] < puntenaantal:
-                        data[dicts].remove(data[dicts][x])
-                        data[dicts].append([puntenaantal, speler, datum])
-                        data[dicts].sort(key=lambda x: x[0])
-                        data[dicts].reverse()
-                    else:
-                        pass
-                else:
-                    data[dicts].append([puntenaantal, speler, datum])
-                    data[dicts].sort(key=lambda x: x[0])
-                    data[dicts].reverse()
+def write_score(topscores, naam, punten):
+    if naam in topscores.keys():
+        speler = topscores[naam]
+        if punten > speler['punten']:
+            speler['punten'] = punten
+            speler['datum'] = str(datetime.datetime.today().strftime("%d %b %Y"))
+            topscores[naam] = speler
+    else:
+        speler = {}
+        speler['punten'] = punten
+        speler['datum'] = str(datetime.datetime.today().strftime("%d %b %Y"))
+        topscores[naam] = speler
 
-    remove_list = []
-    for x in range(0, len(data['Dag_Highscores'])):
-        if data['Dag_Highscores'][x][2] != datum:
-            remove_list.append(data['Dag_Highscores'][x])
-    if remove_list:
-        for value in remove_list:
-            data['Dag_Highscores'].remove(value)
+    with open('leader.json', 'w') as file:
+        json.dump(topscores, file, indent=4)
 
 
-    with open('leaderboard.json','w') as json_file:
-        json.dump(data,json_file,indent=4)
-
-def All_Time_Highscores_afspelen():
-    with open('leaderboard.json', 'r') as json_file:
-        data = json.load(json_file)
-        all_scores = data['All_Time_Highscores']
-    print('Speler : Score')
-    for persoon in all_scores:
-        print(persoon[1] + ' : ' + str(persoon[0]))
-
-def Dag_Highscores_afspelen():
-    with open('leaderboard.json', 'r') as json_file:
-        data = json.load(json_file)
-        all_scores = data['Dag_Highscores']
-    print('Speler : Score')
-    for persoon in all_scores:
-        print(persoon[1] + ' : ' + str(persoon[0]))
 
 
-Highscores_Opslaan(4,'jee')
-All_Time_Highscores_afspelen()
-Dag_Highscores_afspelen()
+write_score(topscores=topscores, punten=500, naam='nonne')
+
+def lees_score(topscores):
+    temp = {}
+    for dict in topscores.keys():
+        for item in topscores[dict].keys():
+            if item == 'punten':
+                temp[topscores[dict][item]] = dict
+    print(temp)
+
+
+def lees_dag(topscores):
+    dict_vandaag = {}
+    for item in topscores:
+        for dict in topscores[item]:
+            if dict == 'datum':
+                if topscores[item][dict] == vandaag:
+                    dict_vandaag[item] = topscores[item]
+    print(dict_vandaag)
+
+with open('leader.json', 'r+') as file:
+    topscores = json.load(file)
+
+lees_dag(topscores)
+
