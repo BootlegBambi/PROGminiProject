@@ -69,6 +69,12 @@ def get_character_id(char_dict):
     return id
 
 
+def replace_charname(str, name):
+    """Replaces the character name in the str and return the new string."""
+    if name.strip() in str:
+        str.replace(name.strip(), 'XXX ')
+    return str
+
 
 def get_character_description(char_dict, char_name=None):
     """
@@ -85,7 +91,7 @@ def get_character_description(char_dict, char_name=None):
     elif char_name.strip() in description:
         return description.replace(char_name.strip(), 'XXX ')
     else:
-        return description
+        return replace_charname(description, get_character_name(char_dict))
 
     
 def get_comic_ID(char_dict):
@@ -100,7 +106,7 @@ def get_comic_ID(char_dict):
         return False
     number = random.randint(0, (total - 1))
     random_comic = data['data']['results'][number]['id']
-    return random_comic 
+    return random_comic
 
 
 def get_comic_name(char_dict):
@@ -115,7 +121,7 @@ def get_comic_name(char_dict):
     data = marvel_conn.get_data(f"/v1/public/comics/{comic_ID}")
     comic_name = data['data']['results'][0]['title']
     hint = f'This character appears in the comic {comic_name}'
-    return hint 
+    return replace_charname(hint, get_character_name(char_dict))
 
 
 def get_serie(char_dict):
@@ -130,7 +136,8 @@ def get_serie(char_dict):
     number = random.randint(0, (total - 1))
     random_series = char_dict['series']['items'][number]['name']
     hint = f'This character appears in series {random_series}'
-    return hint
+    print(hint)
+    return replace_charname(hint, get_character_name(char_dict))
 
 
 def get_other_char_in_comic(char_dict):
@@ -149,7 +156,7 @@ def get_other_char_in_comic(char_dict):
     number = random.randint(0, (total - 1))
     random_other_char = data['data']['results'][number]['name']
     hint = f'This character appears in a comic together with {random_other_char}'
-    return hint
+    return replace_charname(hint, get_character_name(char_dict))
 
     
 def dictionary_random_characters():

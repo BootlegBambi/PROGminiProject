@@ -6,6 +6,10 @@ import marvel_data as mvd
 character_correct = []
 characters_wrong = []
 characters_all = []
+puntenAantal = 25
+def show_endscore():
+    """Shows the score of the player in the endgame screen"""
+    eindpunten['text'] = 'Uw heeft {} punten gescoord'.format(puntenAantal)
 
 size_x = 500
 size_y = 400
@@ -19,7 +23,7 @@ def gui_hint_comic():
     global puntenAantal
     hint = mvd.get_comic_name(character_correct)
     if hint:
-        gui_hintfield["text"] = hint
+        gui_hintfield["text"] = mvd.format_hint(hint)
         puntenAantal -= 3
         if puntenAantal <= 0:
             toonEindScherm()
@@ -34,7 +38,7 @@ def gui_hint_serie():
     global puntenAantal
     hint = mvd.get_serie(character_correct)
     if hint:
-        gui_hintfield["text"] = hint
+        gui_hintfield["text"] = mvd.format_hint(hint)
         puntenAantal -= 3
         if puntenAantal <= 0:
             toonEindScherm()
@@ -50,7 +54,7 @@ def gui_hint_description():
     global puntenAantal
     hint = mvd.get_character_description(character_correct)
     if hint:
-        gui_hintfield["text"] = hint
+        gui_hintfield["text"] = mvd.format_hint(hint)
         puntenAantal -= 3
         if puntenAantal <= 0:
             toonEindScherm()
@@ -65,7 +69,7 @@ def gui_hint_insameserieas():
     global puntenAantal
     hint = mvd.char_in_same_story_as(character_correct)
     if hint:
-        gui_hintfield["text"] = hint
+        gui_hintfield["text"] = mvd.format_hint(hint)
         puntenAantal -= 3
         if puntenAantal <= 0:
             toonEindScherm()
@@ -80,7 +84,7 @@ def gui_hint_insamecomicas():
     global puntenAantal
     hint = mvd.get_other_char_in_comic(character_correct)
     if hint:
-        gui_hintfield["text"] = hint
+        gui_hintfield["text"] = mvd.format_hint(hint)
         puntenAantal -= 3
         if puntenAantal <= 0:
             toonEindScherm()
@@ -90,37 +94,30 @@ def gui_hint_insamecomicas():
         gui_hintfield["text"] = "Hint not available, no point subtracted."
 # End Hints
 
-def checkscore():
-
-    return
-
 def gui_updatescore():
     """Update the current amount of points shown in GUI"""
-    puntenTekst = 'Huidige punten: {}'
-    puntenTeller["text"] = puntenTekst.format(puntenAantal)
-
-
-def raadPoging():
-    pogingInvoer = 'lol'#TIJDELIJK TOTDAT DE MEERKEUZE IS INGEVOEGD
-    if pogingInvoer == 'test': #!!aanpassen: punten naar highscore schrijven, score resetten
-        toonEindScherm()
-    else:
-        showinfo(title='popup', message='Verkeerd geraden') #popup voor verkeerd geraden + puntenaftrek
-        global puntenAantal
-        puntenAantal-= 1
-        if puntenAantal <= 0:
-            toonEindScherm()
-        else:
-            puntenUpdate()
+    global puntenAantal
+    puntenTeller["text"] = 'Huidige punten: {}'.format(puntenAantal)
 
 
 def checkantwoord(answer):
+    """Check if the given answer is correct. If so show the endscreen, else substract 5 point and update the GUI."""
+    global puntenAantal
     if answer:
         toonEindScherm()
+    else:
+        puntenAantal -= 5
+        if puntenAantal <= 0:
+            toonEindScherm()
+        else:
+            gui_updatescore()
 
 
 def toonSpeelScherm():
-    """This function is called at the start of the game"""
+    """
+    This function is called at the start of the game.
+    It initializes and clears the game variables.
+    """
     # Global vars
     global character_correct
     global characters_wrong
@@ -156,6 +153,8 @@ def toonSpeelScherm():
     speelScherm.pack()
 
     # Get and show the start hint
+
+    print(character_correct)
     try:
         hint = mvd.get_character_description(character_correct, mvd.get_character_name(character_correct))
         if not hint:
@@ -164,18 +163,21 @@ def toonSpeelScherm():
             hint = mvd.get_serie(character_correct)
 
         gui_hintfield["text"] = mvd.format_hint(hint)
-    except:
+    except TypeError:
+        print(character_correct)
         showinfo(title='Play again', message="Randomly chosen superhero doesn't contain enough meta information for this program to work.")
         Menu_scherm()
 
 
 def toonEindScherm():
+    """Shows different endgame screens depending on the score."""
     speelScherm.pack_forget()
     Menu.pack_forget()
     global puntenAantal
     if puntenAantal <= 0:
         eindSchermGameOver.pack()
     else:
+        show_endscore()
         eindSchermWin.pack()
 
 def Highscores_scherm():
@@ -204,8 +206,6 @@ rechtsUitlijn = int(root.winfo_screenwidth() / 2 - schermBreedte / 2) #uitlijnen
 benedenUitlijn = int(root.winfo_screenheight() / 2 - schermHoogte / 2)
 
 root.geometry("+{}+{}".format(rechtsUitlijn, benedenUitlijn)) #midden van scherm neerzetten
-
-puntenAantal = 25
 
 #scherm tijdens het spelen
 speelScherm = Frame(master=root, width = size_x, height = size_y)
@@ -263,7 +263,7 @@ eindSchermWin.pack(fill="both", expand = True)
 eindSchermWin.pack_propagate(0)
 eindMelding = Label(master=eindSchermWin, text = 'Goed geraden, gefeliciteerd!', height = 3)
 eindMelding.pack(padx = 10, pady = 10)
-eindpunten = Label(master=eindSchermWin, text='Uw heeft {} punten gescoord'.format(puntenAantal), height=3)
+eindpunten = Label(master=eindSchermWin, height=3)
 eindpunten.pack(padx = 10, pady = 10)
 speelKnop = Button(master=eindSchermWin, text='Opnieuw spelen', command=toonSpeelScherm)
 speelKnop.pack(padx=10, pady=10)
@@ -286,15 +286,17 @@ Menu=Frame(master=root, width=size_x, height=size_y)
 Menu.pack(fill="both", expand=True)
 Menu.configure(background='red')
 Menu.pack_propagate(0)
-label=Label(master=Menu, text='Welkom bij Super-Wonder-Captain', height = 3)
-label.pack(padx = 10, pady = 10)
-gui_speler_invoer=Entry(master=Menu)
-gui_speler_invoer.pack(padx = 10, pady = 10)
-Start_knop=Button(master=Menu, text='Start',command=toonSpeelScherm)
+title_label = Label(master=Menu, text='Welkom bij Super-Wonder-Captain', height=3)
+title_label.pack(padx=10, pady=10)
+gui_invoer_label = Label(master=Menu, text='Enter your name:', height=1, background='red', fg='white')
+gui_invoer_label.pack(padx=10, pady=1)
+gui_speler_invoer = Entry(master=Menu)
+gui_speler_invoer.pack(padx=10, pady=(0, 10))
+Start_knop = Button(master=Menu, text='Start',command=toonSpeelScherm)
 Start_knop.pack(padx = 10, pady = 10)
-Uitleg_knop=Button(master=Menu, text='Uitleg',command=Uitleg_scherm)
+Uitleg_knop = Button(master=Menu, text='Uitleg',command=Uitleg_scherm)
 Uitleg_knop.pack(padx = 10, pady = 10)
-Highscores_knop=Button(master=Menu, text='Highscores', command=Highscores_scherm)
+Highscores_knop = Button(master=Menu, text='Highscores', command=Highscores_scherm)
 Highscores_knop.pack(padx = 10, pady = 10)
 
 #uitlegscherm
