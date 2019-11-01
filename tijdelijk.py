@@ -1,13 +1,46 @@
-comicKnop = Button(master=speelScherm, text='Comic hint', command=nieuweHint)
-comicKnop.place(x = 70, y = 50)
-serieKnop = Button(master=speelScherm, text='Serie hint', command=nieuweHint)
-serieKnop.place(x = 190, y = 50)
-characterinverhaallijnKnop = Button(master=speelScherm, text='In verhaallijn met wie hint', command=nieuweHint)
-characterinverhaallijnKnop.place(x = 285, y = 50)
-superheldInComicMetKnop = Button(master=speelScherm, text='In comic met wie hint', command=nieuweHint)
-superheldInComicMetKnop.place(x = 305, y = 90)
-DescriptionKnop = Button(master=speelScherm, text='Description superheld', command=nieuweHint)
-DescriptionKnop.place(x = 70, y = 90)
+import json
+import datetime
 
-raadLabel = Label(master=speelScherm, text='Raad hieronder de superheld',background='orange')
-raadLabel.place(x=172, y=130)
+def Highscores_Opslaan(puntenaantal,speler):
+    vandaag = datetime.datetime.today()
+    datum = vandaag.strftime("%d %b %Y")
+
+    with open('leaderboard.json','r') as json_file:
+        data = json.load(json_file)
+
+    data['All_Time_Highscores'].append([(str(puntenaantal)),speler,datum])
+    data['Dag_Highscores'].append([(str(puntenaantal)), speler, datum])
+
+    for scores in data['Dag_Highscores']:
+        if scores[2] != datum:
+            data['Dag_Highscores'].remove(scores)
+
+    with open('leaderboard.json','w') as json_file:
+        json.dump(data,json_file,indent=4)
+
+def All_Time_Highscores_afspelen():
+    with open('leaderboard.json','r') as json_file:
+        data = json.load(json_file)
+        alle_highscores=data['All_Time_Highscores']
+        print('Speler : Score')
+
+        alle_highscores.sort()
+        alle_highscores.reverse()
+        for persoon in alle_highscores:
+            print(persoon[1]+' : '+str(persoon[0]))
+
+def Dag_Highscores_afspelen():
+    with open('leaderboard.json','r') as json_file:
+        data = json.load(json_file)
+        alle_highscores=data['Dag_Highscores']
+        print('Speler : Score')
+
+        alle_highscores.sort()
+        alle_highscores.reverse()
+        for persoon in alle_highscores:
+            print(persoon[1]+' : '+str(persoon[0]))
+
+
+Highscores_Opslaan('16','hoi')
+All_Time_Highscores_afspelen()
+Dag_Highscores_afspelen()
