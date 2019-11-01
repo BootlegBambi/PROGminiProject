@@ -1,21 +1,39 @@
 from tkinter import *
 from tkinter.messagebox import showinfo #popup
 import GUI_Knoppen_Functies as GUI_fnc
-from random import shuffle
+from functools import partial
+import marvel_data as mvd
 
-def nieuweHint():
+# Global vars
+character_correct = []
+characters_wrong = []
+characters_all = []
+
+size_x = 500
+size_y = 400
+
+
+
+
+# Hints
+def gui_hint_comic():
+    """ Returns the comic hints from the Marvel API"""
     hint = 'Nieuwe hint vanuit API opgehaald'
-    beginHint["text"] = hint #straks vanuit api dus random
+    mvd.get_comic_name(char_dict)
+    gui_hintfield["text"] = hint  # straks vanuit api dus random
     global puntenAantal
-    puntenAantal-= 3 #puntenaftrek voor hint
+    puntenAantal -= 3  # puntenaftrek voor hint
     if puntenAantal <= 0:
-        toonEindScherm() #geen hints meer, eindscherm
+        toonEindScherm()  # geen hints meer, eindscherm
     else:
-        puntenUpdate()
+        gui_updatescore()
 
-def puntenUpdate():
+# End Hints
+def gui_updatescore(points):
+    """Update the current amount of points shown in GUI"""
     puntenTekst = 'Huidige punten: {}'
-    puntenTeller["text"] = puntenTekst.format(puntenAantal) #punten updaten in speelscherm
+    puntenTeller["text"] = puntenTekst.format(points)
+
 
 def raadPoging():
     pogingInvoer = 'lol'#TIJDELIJK TOTDAT DE MEERKEUZE IS INGEVOEGD
@@ -30,22 +48,56 @@ def raadPoging():
         else:
             puntenUpdate()
 
+
+def checkantwoord(answer):
+    print(answer)
+    if answer:
+        print('correct')
+    else:
+        print('incorrect')
+
+
 def toonSpeelScherm():
-    superheldenLijst.append(goeieSuperheld) #global goeie antwoord toevoegen ivm anders meerdere functiecalls
-    for i in range(0, 5):
-        superheldenLijst.append(GUI_fnc.buttonSuperheld())
-    shuffle(superheldenLijst)
+    """This function is called at the start of the game"""
+    # Global vars
+    global character_correct
+    global characters_wrong
+    global characters_all
+    character_correct.clear()
+    characters_wrong.clear()
+    characters_all.clear()
+
+    #  Select one correct character
+    character_correct = mvd.choose_character()
+
+    # Select random wrong character, and merge correct and wrong characters
+    characters_wrong = mvd.dictionary_random_characters()
+    characters_all = mvd.create_character_list(characters_wrong, character_correct)
+    # Shuffel character data list
+    mvd.shuffellist(characters_all)
+
+    # Apply character names to button texts
+    for i in range(0, len(characters_all)):
+        (buttonLijst[i])["text"] = characters_all[i]['name']
+
     global puntenAantal
+    global gui_speler_invoer
+
     puntenAantal = 25
-    puntenUpdate()
-    global speler_invoer
-    speler_invoer.delete(0, END) #spelerentry legen
+    gui_updatescore(puntenAantal)
+    gui_speler_invoer.delete(0, END)  # Empty input field in GUI
+
+    # Pack the correct screen
     eindSchermWin.pack_forget()
     eindSchermGameOver.pack_forget()
     Menu.pack_forget()
     speelScherm.pack()
-    beginHint["text"] = 'Teruggezet op nieuwe beginhint'
-    speler = speler_invoer.get() #!!naar bestand voor highscores schrijven
+
+    # Get and show the start hint
+    hint = mvd.get_character_description(character_correct, mvd.get_character_name(character_correct))
+    if not hint:
+        hint = mvd.get_comic_name(character_correct)
+    gui_hintfield["text"] = mvd.format_hint(hint)
 
 
 def toonEindScherm(): #!!aanpassen: huidige puntenaantal opslaan in highscorelijst
@@ -89,53 +141,57 @@ superheldenLijst = []
 goeieSuperheld = GUI_fnc.buttonAntwoord()
 
 #scherm tijdens het spelen
-speelScherm = Frame(master=root, width = 500, height = 300)
+speelScherm = Frame(master=root, width = size_x, height = size_y)
 speelScherm.pack(fill = "both", expand = True)
 speelScherm.pack_propagate(0)
-beginHint = Label(master=speelScherm, text = 'deze tekst maakt waarschijnlijk niet meer uit', height = 1,background='yellow')
-beginHint.pack(padx = 10, pady = 10)
+gui_hintfield = Label(master=speelScherm, height=7, background='yellow')
+gui_hintfield.pack(padx=10, pady=10)
 
 #meerdere buttons aanmaken voor verschillende hints
 #true/false variabele voor knop al gedrukt of niet
 #hint ophalen vanuit API, één hint per keer simpel printen, overschrijven want true/false variabele
-comicKnop = Button(master=speelScherm, text='Comic hint', command=nieuweHint)
-comicKnop.place(x = 70, y = 50)
-serieKnop = Button(master=speelScherm, text='Serie hint', command=nieuweHint)
-serieKnop.place(x = 190, y = 50)
-characterinverhaallijnKnop = Button(master=speelScherm, text='In verhaallijn met wie hint', command=nieuweHint)
-characterinverhaallijnKnop.place(x = 285, y = 50)
-superheldInComicMetKnop = Button(master=speelScherm, text='In comic met wie hint', command=nieuweHint)
-superheldInComicMetKnop.place(x = 305, y = 90)
-DescriptionKnop = Button(master=speelScherm, text='Description superheld', command=nieuweHint)
-DescriptionKnop.place(x = 70, y = 90)
+comicKnop = Button(master=speelScherm, text='Comic hint', command=gui_hint_comic)
+comicKnop.place(x = 70, y = 155)
+serieKnop = Button(master=speelScherm, text='Serie hint', command=gui_hint_comic)
+serieKnop.place(x = 190, y = 155)
+characterinverhaallijnKnop = Button(master=speelScherm, text='In verhaallijn met wie hint', command=gui_hint_comic)
+characterinverhaallijnKnop.place(x = 285, y = 155)
+superheldInComicMetKnop = Button(master=speelScherm, text='In comic met wie hint', command=gui_hint_comic)
+superheldInComicMetKnop.place(x = 305, y = 195)
+DescriptionKnop = Button(master=speelScherm, text='Description superheld', command=gui_hint_comic)
+DescriptionKnop.place(x = 70, y = 195)
 
 raadLabel = Label(master=speelScherm, text='Raad hieronder de superheld',background='orange')
-raadLabel.place(x=172, y=130)
+raadLabel.place(x=172, y=235)
 
 #lijst maken en shuffelen van namen
 #for loop doorlopen x[tekst] = superheldnaam
 #bij command functie voor if superheldnaam = tekst dan goed anders -1
 
-superHeldButton1 = Button(master=speelScherm, text = 'superheld 1')
-superHeldButton1.place(x = 70, y = 160)
-superHeldButton2 = Button(master=speelScherm, text = 'superheld 2')
-superHeldButton2.place(x = 214, y = 160) #length = 72px
-superHeldButton3 = Button(master=speelScherm, text = 'superheld 3')
-superHeldButton3.place(x = 358, y = 160)
-superHeldButton4 = Button(master=speelScherm, text = 'superheld 4')
-superHeldButton4.place(x = 70, y = 200)
-superHeldButton5 = Button(master=speelScherm, text = 'superheld 5')
-superHeldButton5.place(x = 214, y = 200)
-superHeldButton6 = Button(master=speelScherm, text = 'superheld 6')
-superHeldButton6.place(x = 358, y = 200)
+
+superHeldButton1 = Button(master=speelScherm, command=lambda: checkantwoord(characters_all[0]['chosen']))
+superHeldButton1.place(x = 70, y = 265)
+superHeldButton2 = Button(master=speelScherm, command=lambda: checkantwoord(characters_all[1]['chosen']))
+superHeldButton2.place(x = 214, y = 265) #length = 72px
+superHeldButton3 = Button(master=speelScherm, command=lambda: checkantwoord(characters_all[2]['chosen']))
+superHeldButton3.place(x = 358, y = 265)
+superHeldButton4 = Button(master=speelScherm, command=lambda: checkantwoord(characters_all[3]['chosen']))
+superHeldButton4.place(x = 70, y = 305)
+superHeldButton5 = Button(master=speelScherm, command=lambda: checkantwoord(characters_all[4]['chosen']))
+superHeldButton5.place(x = 214, y = 305)
+superHeldButton6 = Button(master=speelScherm, command=lambda: checkantwoord(characters_all[5]['chosen']))
+superHeldButton6.place(x = 358, y = 305)
+
+buttonLijst = []
+buttonLijst.extend((superHeldButton1, superHeldButton2, superHeldButton3, superHeldButton4, superHeldButton5, superHeldButton6))
 
 menuKnop = Button(master=speelScherm, text = 'Hoofdmenu', command = Menu_scherm)
-menuKnop.place(x = 120, y = 250)
+menuKnop.place(x = 120, y = 355)
 puntenTeller = Label(master=speelScherm, text = 'Huidige punten: 25', height = 1,background='light green')
-puntenTeller.place(x = 280, y = 250)
+puntenTeller.place(x = 280, y = 355)
 
 #scherm als goed geraden
-eindSchermWin = Frame(master=root, width = 500, height = 300)
+eindSchermWin = Frame(master=root, width = size_x, height = size_y)
 eindSchermWin.pack(fill="both", expand = True)
 eindSchermWin.pack_propagate(0)
 eindMelding = Label(master=eindSchermWin, text = 'Goed geraden, gefeliciteerd!.', height = 3)
@@ -146,7 +202,7 @@ menuKnop = Button(master=eindSchermWin, text = 'Hoofdmenu', command = Menu_scher
 menuKnop.pack(padx = 10, pady = 10)
 
 #scherm als game over
-eindSchermGameOver = Frame(master=root, width = 500, height = 300)
+eindSchermGameOver = Frame(master=root, width = size_x, height = size_y)
 eindSchermGameOver.pack(fill="both", expand = True)
 eindSchermGameOver.pack_propagate(0)
 eindMelding = Label(master=eindSchermGameOver, text = 'Geen punten meer, Game Over.', height = 3)
@@ -157,14 +213,14 @@ menuKnop = Button(master=eindSchermGameOver, text = 'Hoofdmenu', command = Menu_
 menuKnop.pack(padx = 10, pady = 10)
 
 #menuscherm
-Menu=Frame(master=root, width=500, height=300)
+Menu=Frame(master=root, width=size_x, height=size_y)
 Menu.pack(fill="both", expand=True)
 Menu.configure(background='red')
 Menu.pack_propagate(0)
 label=Label(master=Menu, text='Welkom bij Super-Wonder-Captain', height = 3)
 label.pack(padx = 10, pady = 10)
-speler_invoer=Entry(master=Menu)
-speler_invoer.pack(padx = 10, pady = 10)
+gui_speler_invoer=Entry(master=Menu)
+gui_speler_invoer.pack(padx = 10, pady = 10)
 Start_knop=Button(master=Menu, text='Start',command=toonSpeelScherm)
 Start_knop.pack(padx = 10, pady = 10)
 Uitleg_knop=Button(master=Menu, text='Uitleg',command=Uitleg_scherm)
@@ -173,7 +229,7 @@ Highscores_knop=Button(master=Menu, text='Highscores', command=Highscores_scherm
 Highscores_knop.pack(padx = 10, pady = 10)
 
 #uitlegscherm
-Uitleg=Frame(master=root, width=500, height=300)
+Uitleg=Frame(master=root, width=size_x, height=size_y)
 Uitleg.pack(fill="both", expand=True)
 Uitleg.pack_propagate(0)
 Uitleg_titel=Label(master=Uitleg, text='Uitleg', height = 3)
@@ -184,7 +240,7 @@ Uitleg_Menu_Knop=Button(master=Uitleg, text='Menu', command=Menu_scherm)
 Uitleg_Menu_Knop.pack(padx = 10, pady = 10)
 
 #highscorescherm
-Highscores=Frame(master=root, width=500, height=300)
+Highscores=Frame(master=root, width=size_x, height=size_y)
 Highscores.pack(fill="both", expand=True)
 Highscores.pack_propagate(0)
 Highscores_titel=Label(master=Highscores, text='Highscores', height = 3)

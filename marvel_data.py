@@ -22,7 +22,7 @@ def choose_character():
     total = get_numberofcharacters()
     offset = random.randint(0, (total -1))
     data = marvel_conn.get_data("/v1/public/characters", {'offset': offset, 'limit': '1'})
-    chosen_char = data['data']['results']
+    chosen_char = data['data']['results'][0]
     return chosen_char
 
 
@@ -31,7 +31,7 @@ def get_character_ID(char_dict):
     :param char_dict: dictionary only containing character-related info from character.
     :returns: ID of character
     """
-    char_ID = char_dict[0]['id']
+    char_ID = char_dict['id']
     return char_ID
 
 
@@ -40,12 +40,12 @@ def get_image_url(char_dict):
     :param char_dict: dictionary only containing character-related info from character.
     :return: URL to image/thumbnail portraying said character.
     """
-    url = char_dict[0]['thumbnail']['path']
+    url = char_dict['thumbnail']['path']
 
     if 'image_not_available' in url:
         url = 'https://i.pinimg.com/originals/24/92/00/249200c431fe811110761709b303fcaf.jpg'
     else:
-        url = url + '/portrait_fantastic.' + char_dict[0]['thumbnail']['extension']
+        url = url + '/portrait_fantastic.' + char_dict['thumbnail']['extension']
 
     return url
 
@@ -55,7 +55,9 @@ def get_character_name(char_dict):
     :param char_dict: dictionary only containing character-related info from character.
     :return: name corresponding to said character.
     """
-    name = char_dict[0]['name']
+    print(char_dict)
+    print(type(char_dict))
+    name = char_dict['name']
     if '(' and ')' in name:
         start = '('
         end = ')'
@@ -65,7 +67,7 @@ def get_character_name(char_dict):
 
 
 def get_character_id(char_dict):
-    id = char_dict[0]['id']
+    id = char_dict['id']
     return id
 
 
@@ -77,13 +79,13 @@ def get_character_description(char_dict, char_name=None):
     :return: description of said character.
     :return: False if description is empty
     """
-    description = char_dict[0]['description']
+    description = char_dict['description']
     if description == '':
         return False
     elif char_name == None:
         pass
-    elif char_name in description:
-        return description.replace(char_name, 'XXX ')
+    elif char_name.strip() in description:
+        return description.replace(char_name.strip(), 'XXX ')
     else:
         return description
 
@@ -152,9 +154,9 @@ def get_other_char_in_comic(char_dict):
     return hint
 
     
-def dictionary_random_characters(): #voor de random 9 keuze opties?
+def dictionary_random_characters():
     """
-    :return: Dictionary of 9 random characters (keys 1-9) with their respective name, image, and description(if available)
+    :return: Dictionary of 5 random characters (keys 1-5) with their respective name, image, and description(if available)
     Visual:
     {
     1: {
@@ -169,7 +171,7 @@ def dictionary_random_characters(): #voor de random 9 keuze opties?
     }
     """
     dict = {}
-    for x in range(1, 10):
+    for x in range(1, 6):
         char = choose_character()
         if get_character_description(char) == False:
             dict.update({x: {'id': get_character_id(char), 'chosen': False, 'name': get_character_name(char), 'image': get_image_url(char)}})
@@ -216,4 +218,16 @@ def create_character_list(characters_wrong, character_correct):
 
 
 def shuffellist(characters_all):
+    """Shuffles the character list"""
     random.shuffle(characters_all)
+
+
+def insert_newlines(string, every=50):
+    return '\n'.join(string[i:i+every] for i in range(0, len(string), every))
+
+
+def format_hint(hint):
+    print(hint)
+    hint = insert_newlines(hint)
+    print(hint)
+    return hint
