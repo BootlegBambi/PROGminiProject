@@ -1,62 +1,26 @@
 {
-    "All_Time_Highscores": [
-        [
-            "24",
-            "Wouter"
-        ],
-        [
-            "12",
-            "Michiel"
-        ],
-        [
-            "13",
-            "Youri"
-        ],
-        [
-            "20",
-            "Henk"
-        ],
-        [
-            "15",
-            "Amber",
-            "01 Nov 2019"
-        ],
-        [
-            "15",
-            "Amber",
-            "01 Nov 2019"
-        ],
-        [
-            "15",
-            "Amber",
-            "01 Nov 2019"
-        ],
-        [
-            "15",
-            "ashudas",
-            "01 Nov 2019"
-        ],
-        [
-            "16",
-            "hoi",
-            "01 Nov 2019"
-        ],
-        [
-            "16",
-            "hoi",
-            "01 Nov 2019"
-        ]
-    ],
-    "Dag_Highscores": [
-        [
-            "16",
-            "hoi",
-            "02 Nov 2019"
-        ],
-        [
-            "16",
-            "hoi",
-            "01 Nov 2019"
-        ]
-    ]
+    "nonne": {
+        "punten": 500,
+        "datum": "01 Nov 2019"
+    },
+    "youri": {
+        "punten": 501,
+        "datum": "01 Nov 2019"
+    },
+    "Wouter": {
+        "punten": 400,
+        "datum": "01 Nov 2019"
+    },
+    "Jan": {
+        "punten": 405,
+        "datum": "01 Nov 2019"
+    },
+    "Klaas": {
+        "punten": 405,
+        "datum": "01 Nov 2019"
+    },
+    "Kees": {
+        "punten": 405,
+        "datum": "01 Nov 2019"
+    }
 }

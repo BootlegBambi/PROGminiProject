@@ -1,6 +1,7 @@
 from tkinter import *
-from tkinter.messagebox import showinfo
 import marvel_data as mvd
+import leaderboard
+import json
 
 # Global vars
 character_correct = []
@@ -140,11 +141,13 @@ def toonSpeelScherm():
         (buttonLijst[i])["text"] = characters_all[i]['name']
 
     global puntenAantal
-    global gui_speler_invoer
+    global spelerNaam
 
+    spelerNaam = viewmainmenu_entry.get()
+    print(spelerNaam)
     puntenAantal = 25
     gui_updatescore()
-    gui_speler_invoer.delete(0, END)  # Empty input field in GUI
+    viewmainmenu_entry.delete(0, END)  # Empty input field in GUI
 
     # Pack the correct screen
     eindSchermWin.pack_forget()
@@ -179,6 +182,11 @@ def toonEindScherm():
 
 
 def Highscores_scherm():
+    with open('leaderboard.json', 'r+') as file:
+        topscores = json.load(file)
+
+    Highscores_Alltime['text'] = leaderboard.lees_score(topscores)
+    Highscores_Daily['text'] = leaderboard.lees_dag(topscores)
     viewmainmenu.pack_forget()
     Highscores.pack()
 
@@ -321,11 +329,17 @@ Highscores = Frame(master=root, width=size_x, height=size_y)
 Highscores.pack(fill="both", expand=True)
 Highscores.configure(background='red')
 Highscores.pack_propagate(0)
-Highscores_title = Label(master=Highscores, text='Highscores', height=3, font=("Comic Sans MS", 18), background='red',
+Highscores_title_1 = Label(master=Highscores, text='Overall highscore', height=1, font=("Comic Sans MS", 18), background='red',
                          fg='white')
-Highscores_title.pack(padx=10, pady=10)
-Highscores_Alltime = Label(master=Highscores, text='-\n-\n-\n-')
-Highscores_Alltime.pack(padx=10, pady=10)
+Highscores_title_1.pack(padx=10, pady=(5, 5))
+Highscores_Alltime = Label(master=Highscores)
+Highscores_Alltime.pack(padx=1, pady=(1, 0))
+
+Highscores_title_2 = Label(master=Highscores, text='Daily highscore', height=1, font=("Comic Sans MS", 18), background='red',
+                         fg='white')
+Highscores_title_2.pack(padx=10, pady=(10, 5))
+Highscores_Daily = Label(master=Highscores)
+Highscores_Daily.pack(padx=1, pady=(1, 0))
 Highscores_menuButton = Button(master=Highscores, text='Menu', command=view_menu)
 Highscores_menuButton.pack(padx=10, pady=10)
 

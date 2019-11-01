@@ -23,22 +23,21 @@ def write_score(topscores, naam, punten):
         json.dump(topscores, file, indent=4)
 
 
+
+
+#write_score(topscores=topscores, punten=405, naam='Kees')
+
 def lees_score(topscores):
     temp = {}
     for dict in topscores.keys():
         for item in topscores[dict].keys():
             if item == 'punten':
-                temp[dict] = topscores[dict][item]
-            if len(temp) == 5:
-                break
-        if len(temp) == 5:
-            break
+                temp[topscores[dict][item]] = dict
 
     topscore_text = ""
-    for name, score in sorted(temp.items(), reverse=True):
+    for score, name in sorted(temp.items(), reverse=True):
         topscore_text += " - {0:10} : {1:2}\n".format(name, score)
     return topscore_text
-
 
 def lees_dag(topscores):
     temp = {}
@@ -47,10 +46,19 @@ def lees_dag(topscores):
             if dict == 'datum':
                 if topscores[item][dict] == vandaag:
                     temp[item] = topscores[item]
-            if len(temp) == 5:
-                break
 
     topscore_day_text = ""
     for row in sorted(temp.items(), reverse=True):
         topscore_day_text += " - {0:10} : {1:2}\n".format(row[0], row[1]['punten'])
     return topscore_day_text
+
+
+with open('leaderboard.json', 'r+') as file:
+    topscores = json.load(file)
+
+
+topscores_day = lees_dag(topscores)
+print(topscores_day)
+
+topscores = lees_score(topscores)
+print(topscores)
