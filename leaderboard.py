@@ -6,7 +6,9 @@ vandaag = datetime.datetime.today().strftime("%d %b %Y")
 with open('leaderboard.json', 'r+') as file:
     topscores = json.load(file)
 
+
 def write_score(topscores, naam, punten):
+    naam = naam.capitalize()
     if naam in topscores.keys():
         speler = topscores[naam]
         if punten > speler['punten']:
@@ -24,33 +26,34 @@ def write_score(topscores, naam, punten):
 
 
 def lees_score(topscores):
-    temp = {}
+    """Return a formatted string of the top 5 players"""
+    temp, topscore_text, count = {}, "", 0
     for dict in topscores.keys():
         for item in topscores[dict].keys():
             if item == 'punten':
                 temp[dict] = topscores[dict][item]
-            if len(temp) == 5:
-                break
-        if len(temp) == 5:
-            break
 
-    topscore_text = ""
-    for name, score in sorted(temp.items(), reverse=True):
-        topscore_text += " - {0:10} : {1:2}\n".format(name, score)
+    for key in sorted(temp, key=temp.get, reverse=True):
+        topscore_text += "- {0:<}: {1:>3}\n".format(key, temp[key])
+        count += 1
+        if count == 5:
+            break
     return topscore_text
 
 
 def lees_dag(topscores):
-    temp = {}
+    """Return a formatted string of the top 5 players of the day"""
+    temp, topscore_day_text, count = {}, "", 0
     for item in topscores:
         for dict in topscores[item]:
             if dict == 'datum':
                 if topscores[item][dict] == vandaag:
-                    temp[item] = topscores[item]
-            if len(temp) == 5:
-                break
+                    temp[item] = topscores[item]['punten']
 
-    topscore_day_text = ""
-    for row in sorted(temp.items(), reverse=True):
-        topscore_day_text += " - {0:10} : {1:2}\n".format(row[0], row[1]['punten'])
+    for key in sorted(temp, key=temp.get, reverse=True):
+        topscore_day_text += "- {0:<}: {1:>3}\n".format(key, temp[key])
+        count += 1
+        if count == 5:
+            break
     return topscore_day_text
+

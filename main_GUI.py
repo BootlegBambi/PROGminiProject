@@ -144,7 +144,6 @@ def toonSpeelScherm():
     global spelerNaam
 
     spelerNaam = viewmainmenu_entry.get()
-    print(spelerNaam)
     puntenAantal = 25
     gui_updatescore()
     viewmainmenu_entry.delete(0, END)  # Empty input field in GUI
@@ -177,6 +176,10 @@ def toonEindScherm():
     if puntenAantal <= 0:
         eindSchermGameOver.pack()
     else:
+        with open('leaderboard.json', 'r+') as file:
+            topscores = json.load(file)
+        leaderboard.write_score(topscores=topscores, punten=puntenAantal, naam=spelerNaam)
+
         show_endscore()
         eindSchermWin.pack()
 
@@ -332,13 +335,13 @@ Highscores.pack_propagate(0)
 Highscores_title_1 = Label(master=Highscores, text='Overall highscore', height=1, font=("Comic Sans MS", 18), background='red',
                          fg='white')
 Highscores_title_1.pack(padx=10, pady=(5, 5))
-Highscores_Alltime = Label(master=Highscores)
+Highscores_Alltime = Label(master=Highscores, justify=LEFT)
 Highscores_Alltime.pack(padx=1, pady=(1, 0))
 
 Highscores_title_2 = Label(master=Highscores, text='Daily highscore', height=1, font=("Comic Sans MS", 18), background='red',
                          fg='white')
 Highscores_title_2.pack(padx=10, pady=(10, 5))
-Highscores_Daily = Label(master=Highscores)
+Highscores_Daily = Label(master=Highscores, justify=LEFT)
 Highscores_Daily.pack(padx=1, pady=(1, 0))
 Highscores_menuButton = Button(master=Highscores, text='Menu', command=view_menu)
 Highscores_menuButton.pack(padx=10, pady=10)
