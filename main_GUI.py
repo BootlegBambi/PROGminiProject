@@ -18,21 +18,83 @@ size_y = 400
 # Hints
 def gui_hint_comic():
     """ Returns the comic hints from the Marvel API"""
-    hint = 'Nieuwe hint vanuit API opgehaald'
-    mvd.get_comic_name(char_dict)
-    gui_hintfield["text"] = hint  # straks vanuit api dus random
     global puntenAantal
-    puntenAantal -= 3  # puntenaftrek voor hint
-    if puntenAantal <= 0:
-        toonEindScherm()  # geen hints meer, eindscherm
+    hint = mvd.get_comic_name(character_correct)
+    if hint:
+        gui_hintfield["text"] = hint
+        puntenAantal -= 3
+        if puntenAantal <= 0:
+            toonEindScherm()
+        else:
+            gui_updatescore()
     else:
-        gui_updatescore()
+        gui_hintfield["text"] = "Hint not available, no point subtracted."
 
+
+def gui_hint_serie():
+    """ Returns the comic hints from the Marvel API"""
+    global puntenAantal
+    hint = mvd.get_serie(character_correct)
+    if hint:
+        gui_hintfield["text"] = hint
+        puntenAantal -= 3
+        if puntenAantal <= 0:
+            toonEindScherm()
+        else:
+            gui_updatescore()
+    else:
+        gui_hintfield["text"] = "Hint not available, no point subtracted."
+
+
+
+def gui_hint_description():
+    """ Returns the comic hints from the Marvel API"""
+    global puntenAantal
+    hint = mvd.get_character_description(character_correct)
+    if hint:
+        gui_hintfield["text"] = hint
+        puntenAantal -= 3
+        if puntenAantal <= 0:
+            toonEindScherm()
+        else:
+            gui_updatescore()
+    else:
+        gui_hintfield["text"] = "Hint not available, no point subtracted."
+
+
+def gui_hint_insameserieas():
+    """ Returns the comic hints from the Marvel API"""
+    global puntenAantal
+    hint = mvd.char_in_same_story_as(character_correct)
+    if hint:
+        gui_hintfield["text"] = hint
+        puntenAantal -= 3
+        if puntenAantal <= 0:
+            toonEindScherm()
+        else:
+            gui_updatescore()
+    else:
+        gui_hintfield["text"] = "Hint not available, no point subtracted."
+
+
+def gui_hint_insamecomicas():
+    """ Returns the comic hints from the Marvel API"""
+    global puntenAantal
+    hint = mvd.get_other_char_in_comic(character_correct)
+    if hint:
+        gui_hintfield["text"] = hint
+        puntenAantal -= 3
+        if puntenAantal <= 0:
+            toonEindScherm()
+        else:
+            gui_updatescore()
+    else:
+        gui_hintfield["text"] = "Hint not available, no point subtracted."
 # End Hints
-def gui_updatescore(points):
+def gui_updatescore():
     """Update the current amount of points shown in GUI"""
     puntenTekst = 'Huidige punten: {}'
-    puntenTeller["text"] = puntenTekst.format(points)
+    puntenTeller["text"] = puntenTekst.format(puntenAantal)
 
 
 def raadPoging():
@@ -84,7 +146,7 @@ def toonSpeelScherm():
     global gui_speler_invoer
 
     puntenAantal = 25
-    gui_updatescore(puntenAantal)
+    gui_updatescore()
     gui_speler_invoer.delete(0, END)  # Empty input field in GUI
 
     # Pack the correct screen
@@ -97,6 +159,8 @@ def toonSpeelScherm():
     hint = mvd.get_character_description(character_correct, mvd.get_character_name(character_correct))
     if not hint:
         hint = mvd.get_comic_name(character_correct)
+    if not hint:
+        hint = mvd.gui_hint_serie(character_correct)
     gui_hintfield["text"] = mvd.format_hint(hint)
 
 
@@ -137,8 +201,6 @@ benedenUitlijn = int(root.winfo_screenheight() / 2 - schermHoogte / 2)
 root.geometry("+{}+{}".format(rechtsUitlijn, benedenUitlijn)) #midden van scherm neerzetten
 
 puntenAantal = 25
-superheldenLijst = []
-goeieSuperheld = GUI_fnc.buttonAntwoord()
 
 #scherm tijdens het spelen
 speelScherm = Frame(master=root, width = size_x, height = size_y)
@@ -152,13 +214,13 @@ gui_hintfield.pack(padx=10, pady=10)
 #hint ophalen vanuit API, één hint per keer simpel printen, overschrijven want true/false variabele
 comicKnop = Button(master=speelScherm, text='Comic hint', command=gui_hint_comic)
 comicKnop.place(x = 70, y = 155)
-serieKnop = Button(master=speelScherm, text='Serie hint', command=gui_hint_comic)
+serieKnop = Button(master=speelScherm, text='Serie hint', command=gui_hint_serie)
 serieKnop.place(x = 190, y = 155)
-characterinverhaallijnKnop = Button(master=speelScherm, text='In verhaallijn met wie hint', command=gui_hint_comic)
+characterinverhaallijnKnop = Button(master=speelScherm, text='In verhaallijn met wie hint', command=gui_hint_insameserieas)
 characterinverhaallijnKnop.place(x = 285, y = 155)
-superheldInComicMetKnop = Button(master=speelScherm, text='In comic met wie hint', command=gui_hint_comic)
+superheldInComicMetKnop = Button(master=speelScherm, text='In comic met wie hint', command=gui_hint_insamecomicas)
 superheldInComicMetKnop.place(x = 305, y = 195)
-DescriptionKnop = Button(master=speelScherm, text='Description superheld', command=gui_hint_comic)
+DescriptionKnop = Button(master=speelScherm, text='Description superheld', command=gui_hint_description)
 DescriptionKnop.place(x = 70, y = 195)
 
 raadLabel = Label(master=speelScherm, text='Raad hieronder de superheld',background='orange')

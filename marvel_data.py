@@ -55,8 +55,6 @@ def get_character_name(char_dict):
     :param char_dict: dictionary only containing character-related info from character.
     :return: name corresponding to said character.
     """
-    print(char_dict)
-    print(type(char_dict))
     name = char_dict['name']
     if '(' and ')' in name:
         start = '('
@@ -126,11 +124,11 @@ def get_serie(char_dict):
     :return: a series the character is in.
     :return: False if there are no series.
     """
-    total = char_dict[0]['series']['available']
+    total = char_dict['series']['available']
     if total == 0:
         return False
     number = random.randint(0, (total - 1))
-    random_series = char_dict[0]['series']['items'][number]['name']
+    random_series = char_dict['series']['items'][number]['name']
     hint = f'This character appears in series {random_series}'
     return hint
 
@@ -186,7 +184,7 @@ def char_in_same_story_as(character):
     :param character: Dictionary with charachter information
     :return string: Hint to help find the character.
     """
-    story_url = character[0]['stories']['collectionURI']
+    story_url = character['stories']['collectionURI']
     story_url.replace('http://gateway.marvel.com', '')
 
     stories = marvel_conn.get_data(story_url)
@@ -227,7 +225,5 @@ def insert_newlines(string, every=50):
 
 
 def format_hint(hint):
-    print(hint)
     hint = insert_newlines(hint)
-    print(hint)
     return hint
