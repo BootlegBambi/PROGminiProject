@@ -1,7 +1,5 @@
 from tkinter import *
-from tkinter.messagebox import showinfo #popup
-import GUI_Knoppen_Functies as GUI_fnc
-from functools import partial
+from tkinter.messagebox import showinfo
 import marvel_data as mvd
 
 # Global vars
@@ -91,6 +89,11 @@ def gui_hint_insamecomicas():
     else:
         gui_hintfield["text"] = "Hint not available, no point subtracted."
 # End Hints
+
+def checkscore():
+
+    return
+
 def gui_updatescore():
     """Update the current amount of points shown in GUI"""
     puntenTekst = 'Huidige punten: {}'
@@ -112,11 +115,8 @@ def raadPoging():
 
 
 def checkantwoord(answer):
-    print(answer)
     if answer:
-        print('correct')
-    else:
-        print('incorrect')
+        toonEindScherm()
 
 
 def toonSpeelScherm():
@@ -156,15 +156,20 @@ def toonSpeelScherm():
     speelScherm.pack()
 
     # Get and show the start hint
-    hint = mvd.get_character_description(character_correct, mvd.get_character_name(character_correct))
-    if not hint:
-        hint = mvd.get_comic_name(character_correct)
-    if not hint:
-        hint = mvd.gui_hint_serie(character_correct)
-    gui_hintfield["text"] = mvd.format_hint(hint)
+    try:
+        hint = mvd.get_character_description(character_correct, mvd.get_character_name(character_correct))
+        if not hint:
+            hint = mvd.get_comic_name(character_correct)
+        if not hint:
+            hint = mvd.get_serie(character_correct)
+
+        gui_hintfield["text"] = mvd.format_hint(hint)
+    except:
+        showinfo(title='Play again', message="Randomly chosen superhero doesn't contain enough meta information for this program to work.")
+        Menu_scherm()
 
 
-def toonEindScherm(): #!!aanpassen: huidige puntenaantal opslaan in highscorelijst
+def toonEindScherm():
     speelScherm.pack_forget()
     Menu.pack_forget()
     global puntenAantal
@@ -256,8 +261,10 @@ puntenTeller.place(x = 280, y = 355)
 eindSchermWin = Frame(master=root, width = size_x, height = size_y)
 eindSchermWin.pack(fill="both", expand = True)
 eindSchermWin.pack_propagate(0)
-eindMelding = Label(master=eindSchermWin, text = 'Goed geraden, gefeliciteerd!.', height = 3)
+eindMelding = Label(master=eindSchermWin, text = 'Goed geraden, gefeliciteerd!', height = 3)
 eindMelding.pack(padx = 10, pady = 10)
+eindpunten = Label(master=eindSchermWin, text='Uw heeft {} punten gescoord'.format(puntenAantal), height=3)
+eindpunten.pack(padx = 10, pady = 10)
 speelKnop = Button(master=eindSchermWin, text='Opnieuw spelen', command=toonSpeelScherm)
 speelKnop.pack(padx=10, pady=10)
 menuKnop = Button(master=eindSchermWin, text = 'Hoofdmenu', command = Menu_scherm)

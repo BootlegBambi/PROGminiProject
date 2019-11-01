@@ -124,7 +124,7 @@ def get_serie(char_dict):
     :return: a series the character is in.
     :return: False if there are no series.
     """
-    total = char_dict['series']['available']
+    total = char_dict['series']['returned']
     if total == 0:
         return False
     number = random.randint(0, (total - 1))
@@ -189,8 +189,8 @@ def char_in_same_story_as(character):
 
     stories = marvel_conn.get_data(story_url)
     if len(stories['data']['results']) > 0:
-        if stories['data']['results'][0]['characters']['available'] > 0:
-            max = stories['data']['results'][0]['characters']['available']-1
+        if stories['data']['results'][0]['characters']['returned'] > 0:
+            max = stories['data']['results'][0]['characters']['returned']-1
             number = random.randint(0, max)
             random_char = stories['data']['results'][0]['characters']['items'][number]['name']
             return "This character appears in the same serie(s) as {}".format(random_char)
