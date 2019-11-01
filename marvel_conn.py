@@ -4,6 +4,8 @@ import http.client
 import json
 import time
 import urllib
+import curio
+import curio_http
 
 def get_md5digest(timestamp, public_key):
     """

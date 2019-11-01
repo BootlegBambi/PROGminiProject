@@ -116,6 +116,7 @@ def get_comic_name(char_dict):
     :return: False if there are no comic books.
     """
     comic_ID = get_comic_ID(char_dict)
+
     if comic_ID == False:
         return False
     data = marvel_conn.get_data(f"/v1/public/comics/{comic_ID}")
@@ -136,7 +137,6 @@ def get_serie(char_dict):
     number = random.randint(0, (total - 1))
     random_series = char_dict['series']['items'][number]['name']
     hint = f'This character appears in series {random_series}'
-    print(hint)
     return replace_charname(hint, get_character_name(char_dict))
 
 

@@ -9,7 +9,7 @@ characters_all = []
 puntenAantal = 25
 def show_endscore():
     """Shows the score of the player in the endgame screen"""
-    eindpunten['text'] = 'Uw heeft {} punten gescoord'.format(puntenAantal)
+    eindpunten['text'] = 'U heeft {} punten gescoord'.format(puntenAantal)
 
 size_x = 500
 size_y = 400
@@ -46,7 +46,6 @@ def gui_hint_serie():
             gui_updatescore()
     else:
         gui_hintfield["text"] = "Hint not available, no point subtracted."
-
 
 
 def gui_hint_description():
@@ -153,8 +152,6 @@ def toonSpeelScherm():
     speelScherm.pack()
 
     # Get and show the start hint
-
-    print(character_correct)
     try:
         hint = mvd.get_character_description(character_correct, mvd.get_character_name(character_correct))
         if not hint:
@@ -162,9 +159,11 @@ def toonSpeelScherm():
         if not hint:
             hint = mvd.get_serie(character_correct)
 
-        gui_hintfield["text"] = mvd.format_hint(hint)
+        if hint:
+            gui_hintfield["text"] = mvd.format_hint(hint)
+        else:
+            gui_hintfield["text"] = mvd.format_hint('No hints available for this character')
     except TypeError:
-        print(character_correct)
         showinfo(title='Play again', message="Randomly chosen superhero doesn't contain enough meta information for this program to work.")
         Menu_scherm()
 
@@ -210,26 +209,27 @@ root.geometry("+{}+{}".format(rechtsUitlijn, benedenUitlijn)) #midden van scherm
 #scherm tijdens het spelen
 speelScherm = Frame(master=root, width = size_x, height = size_y)
 speelScherm.pack(fill = "both", expand = True)
+speelScherm.configure(background='red')
 speelScherm.pack_propagate(0)
-gui_hintfield = Label(master=speelScherm, height=7, background='yellow')
+gui_hintfield = Label(master=speelScherm, height=7, font=("Comic Sans MS", 9), background='red', fg='white')
 gui_hintfield.pack(padx=10, pady=10)
 
 #meerdere buttons aanmaken voor verschillende hints
 #true/false variabele voor knop al gedrukt of niet
 #hint ophalen vanuit API, één hint per keer simpel printen, overschrijven want true/false variabele
-comicKnop = Button(master=speelScherm, text='Comic hint', command=gui_hint_comic)
-comicKnop.place(x = 70, y = 155)
-serieKnop = Button(master=speelScherm, text='Serie hint', command=gui_hint_serie)
-serieKnop.place(x = 190, y = 155)
-characterinverhaallijnKnop = Button(master=speelScherm, text='In verhaallijn met wie hint', command=gui_hint_insameserieas)
-characterinverhaallijnKnop.place(x = 285, y = 155)
-superheldInComicMetKnop = Button(master=speelScherm, text='In comic met wie hint', command=gui_hint_insamecomicas)
-superheldInComicMetKnop.place(x = 305, y = 195)
-DescriptionKnop = Button(master=speelScherm, text='Description superheld', command=gui_hint_description)
-DescriptionKnop.place(x = 70, y = 195)
 
-raadLabel = Label(master=speelScherm, text='Raad hieronder de superheld',background='orange')
-raadLabel.place(x=172, y=235)
+superheldInComicMetKnop = Button(master=speelScherm, text='In comic met wie hint', command=gui_hint_insamecomicas)
+superheldInComicMetKnop.place(x = 70, y = 155)
+serieKnop = Button(master=speelScherm, text='Serie hint', command=gui_hint_serie)
+serieKnop.place(x = 300, y = 155)
+
+characterinverhaallijnKnop = Button(master=speelScherm, text='In verhaallijn met wie hint', command=gui_hint_insameserieas)
+characterinverhaallijnKnop.place(x = 70, y = 195)
+comicKnop = Button(master=speelScherm, text='Comic hint', command=gui_hint_comic)
+comicKnop.place(x = 300, y = 195)
+
+raadLabel = Label(master=speelScherm, text='Raad hieronder de superheld', font=("Comic Sans MS", 11), background='red', fg='white')
+raadLabel.place(x=150, y=235)
 
 #lijst maken en shuffelen van namen
 #for loop doorlopen x[tekst] = superheldnaam
@@ -260,8 +260,9 @@ puntenTeller.place(x = 280, y = 355)
 #scherm als goed geraden
 eindSchermWin = Frame(master=root, width = size_x, height = size_y)
 eindSchermWin.pack(fill="both", expand = True)
+eindSchermWin.configure(background='red')
 eindSchermWin.pack_propagate(0)
-eindMelding = Label(master=eindSchermWin, text = 'Goed geraden, gefeliciteerd!', height = 3)
+eindMelding = Label(master=eindSchermWin, text='Goed geraden, gefeliciteerd!', height=3, font=("Comic Sans MS", 18), background='red', fg='white')
 eindMelding.pack(padx = 10, pady = 10)
 eindpunten = Label(master=eindSchermWin, height=3)
 eindpunten.pack(padx = 10, pady = 10)
@@ -273,8 +274,9 @@ menuKnop.pack(padx = 10, pady = 10)
 #scherm als game over
 eindSchermGameOver = Frame(master=root, width = size_x, height = size_y)
 eindSchermGameOver.pack(fill="both", expand = True)
+eindSchermGameOver.configure(background='red')
 eindSchermGameOver.pack_propagate(0)
-eindMelding = Label(master=eindSchermGameOver, text = 'Geen punten meer, Game Over.', height = 3)
+eindMelding = Label(master=eindSchermGameOver, text = 'Geen punten meer, Game Over!', height = 3, font=("Comic Sans MS", 18), background='red', fg='white')
 eindMelding.pack(padx = 10, pady = 10)
 speelKnop = Button(master=eindSchermGameOver, text='Opnieuw spelen', command=toonSpeelScherm)
 speelKnop.pack(padx=10, pady=10)
@@ -286,9 +288,9 @@ Menu=Frame(master=root, width=size_x, height=size_y)
 Menu.pack(fill="both", expand=True)
 Menu.configure(background='red')
 Menu.pack_propagate(0)
-title_label = Label(master=Menu, text='Welkom bij Super-Wonder-Captain', height=3)
+title_label = Label(master=Menu, text='Welkom bij Super-Wonder-Captain', height=3, font=("Comic Sans MS", 18), background='red', fg='white')
 title_label.pack(padx=10, pady=10)
-gui_invoer_label = Label(master=Menu, text='Enter your name:', height=1, background='red', fg='white')
+gui_invoer_label = Label(master=Menu, text='Enter your name:', height=1, font=("Comic Sans MS", 11), background='red', fg='white')
 gui_invoer_label.pack(padx=10, pady=1)
 gui_speler_invoer = Entry(master=Menu)
 gui_speler_invoer.pack(padx=10, pady=(0, 10))
@@ -302,10 +304,11 @@ Highscores_knop.pack(padx = 10, pady = 10)
 #uitlegscherm
 Uitleg=Frame(master=root, width=size_x, height=size_y)
 Uitleg.pack(fill="both", expand=True)
+Uitleg.configure(background='red')
 Uitleg.pack_propagate(0)
-Uitleg_titel=Label(master=Uitleg, text='Uitleg', height = 3)
+Uitleg_titel = Label(master=Uitleg, text='Uitleg', height=3, font=("Comic Sans MS", 18), background='red', fg='white')
 Uitleg_titel.pack(padx = 10, pady = 10)
-Uitleg_regels=Label(master=Uitleg, text='Je begint met 25 punten\n-3 punten bij elke nieuwe hint die je opvraagt.\n-1 punt bij elke foute superheld die je hebt geraden.\n')
+Uitleg_regels=Label(master=Uitleg, font=("Comic Sans MS", 11), text='Je begint met 25 punten\n\n-3 punten bij elke nieuwe hint die je opvraagt.\n\n-1 punt bij elke foute superheld die je hebt geraden.\n')
 Uitleg_regels.pack(padx = 10, pady = 10)
 Uitleg_Menu_Knop=Button(master=Uitleg, text='Menu', command=Menu_scherm)
 Uitleg_Menu_Knop.pack(padx = 10, pady = 10)
@@ -313,8 +316,9 @@ Uitleg_Menu_Knop.pack(padx = 10, pady = 10)
 #highscorescherm
 Highscores=Frame(master=root, width=size_x, height=size_y)
 Highscores.pack(fill="both", expand=True)
+Highscores.configure(background='red')
 Highscores.pack_propagate(0)
-Highscores_titel=Label(master=Highscores, text='Highscores', height = 3)
+Highscores_titel = Label(master=Highscores, text='Highscores', height=3, font=("Comic Sans MS", 18), background='red', fg='white')
 Highscores_titel.pack(padx = 10, pady = 10)
 Highscores_Alltime=Label(master=Highscores, text='-\n-\n-\n-')
 Highscores_Alltime.pack(padx = 10, pady = 10)
