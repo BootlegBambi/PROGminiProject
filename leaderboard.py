@@ -8,7 +8,12 @@ with open('leaderboard.json', 'r+') as file:
 
 
 def write_score(topscores, naam, punten):
-    naam = naam.capitalize()
+    """Write score to file"""
+    if naam.strip() == '':
+        naam = 'Anonymous'
+    else:
+        naam = naam.capitalize()
+
     if naam in topscores.keys():
         speler = topscores[naam]
         if punten > speler['punten']:
